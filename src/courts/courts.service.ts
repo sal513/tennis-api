@@ -9,7 +9,6 @@ export class CourtsService implements OnModuleInit {
   private data: Court[] = [];
   private dataPath = join(process.cwd(), 'data', 'courts.json');
 
-  // ⚡ Chargement des données au démarrage
   async onModuleInit() {
     try {
       const raw = await readFile(this.dataPath, 'utf8');
@@ -19,21 +18,18 @@ export class CourtsService implements OnModuleInit {
     }
   }
 
-  // 📋 Liste résumée
   listSummary() {
     return this.data.map(({ id, name, city, imageUrl, surface, latitude, longitude, summary, favorite }) => ({
       id, name, city, imageUrl, surface, latitude, longitude, summary, favorite
     }));
   }
 
-  // 🔎 Détail par ID
   findOne(id: string) {
     const c = this.data.find(x => x.id === id);
     if (!c) throw new NotFoundException('Court not found');
     return c;
   }
 
-  // ➕ Création
   create(dto: CreateCourtDto) {
     if (this.data.some(x => x.id === dto.id)) {
       throw new Error('ID already exists');
@@ -43,14 +39,13 @@ export class CourtsService implements OnModuleInit {
     return c;
   }
 
-  // ⭐ Mettre à jour le favori
   updateFavorite(id: string, favorite: boolean) {
     const c = this.findOne(id);
     c.favorite = favorite;
     return { id: c.id, favorite: c.favorite };
   }
 
-  // 🔍 Recherche par mot-clé
+
   search(q: string) {
     const x = (q ?? '').toLowerCase();
     return this.listSummary().filter(
